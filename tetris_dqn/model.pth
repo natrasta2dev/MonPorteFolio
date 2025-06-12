@@ -1,0 +1,6 @@
+# Sauvegarde
+torch.save(agent.model.state_dict(), "models/tetris_dqn.pth")
+
+# Chargement
+agent.model.load_state_dict(torch.load("models/tetris_dqn.pth"))
+agent.model.eval()  # désactive dropout etc. pour l’inférence
