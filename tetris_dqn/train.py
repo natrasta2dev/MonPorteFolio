@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import deque
 import random
-from env.tetris_env import TetrisEnv
+from tetris_dqn.env.tetris_env import TetrisEnv
 
 # ==== DQN ==== #
 class DQN(nn.Module):
