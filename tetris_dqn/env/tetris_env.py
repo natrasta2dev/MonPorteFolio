@@ -3,6 +3,7 @@
 
 import numpy as np
 import random
+import pygame
 
 pygame.display.set_mode((300, 600))
 pygame.display.set_caption("Tetris AI Live")
