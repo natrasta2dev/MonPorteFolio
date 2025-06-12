@@ -10,20 +10,21 @@ pygame.display.set_caption("Tetris AI Live")
 
 
 class TetrisEnv:
-    def __init__(self, width=10, height=20):
-        self.width = width
-        self.height = height
+    def __init__(self):
+        self.width = 10
+        self.height = 20
+        self.board = [[0 for _ in range(self.width)] for _ in range(self.height)]
+        self.pieces = {
+            'I': [[1, 1, 1, 1]],
+            'O': [[1, 1], [1, 1]],
+            'T': [[0, 1, 0], [1, 1, 1]],
+            'S': [[0, 1, 1], [1, 1, 0]],
+            'Z': [[1, 1, 0], [0, 1, 1]],
+            'J': [[1, 0, 0], [1, 1, 1]],
+            'L': [[0, 0, 1], [1, 1, 1]],
+        }
         self.reset()
 
-        self.pieces = {
-            'T': [[1, 1, 1], [0, 1, 0]],
-            'O': [[2, 2], [2, 2]],
-            'L': [[0, 0, 3], [3, 3, 3]],
-            'J': [[4, 0, 0], [4, 4, 4]],
-            'I': [[5, 5, 5, 5]],
-            'S': [[0, 6, 6], [6, 6, 0]],
-            'Z': [[7, 7, 0], [0, 7, 7]],
-        }
 
     def reset(self):
         self.board = np.zeros((self.height, self.width), dtype=int)
@@ -99,7 +100,22 @@ class TetrisEnv:
         return np.rot90(matrix, -k).tolist()
 
     def _get_state(self):
-        board_flat = self.board.flatten()
-        piece_flat = np.array(self.current_piece).flatten()
-        pos = np.array(self.current_pos)
-        return np.concatenate([board_flat, piece_flat, pos])
+        flat_board = np.array(self.board).flatten()
+        piece_x = self.piece_x if hasattr(self, 'piece_x') else 0
+        piece_y = self.piece_y if hasattr(self, 'piece_y') else 0
+        piece_type = list(self.pieces.keys()).index(self.current_piece_key) if hasattr(self, 'current_piece_key') else 0
+
+        # Ajout de 3 éléments : piece_x, piece_y, type
+        extras = np.array([piece_x, piece_y, piece_type])
+
+        state = np.concatenate([flat_board, extras])
+
+        # Pad si nécessaire pour atteindre exactement 208 éléments
+        required_size = 208
+        if len(state) < required_size:
+            padding = np.zeros(required_size - len(state))
+            state = np.concatenate([state, padding])
+        elif len(state) > required_size:
+            state = state[:required_size]
+
+        return state.astype(np.float32)
