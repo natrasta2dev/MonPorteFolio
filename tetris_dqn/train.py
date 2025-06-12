@@ -1,4 +1,3 @@
-# Point d'entrée principal pour entraîner l'agent
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,17 +6,8 @@ import matplotlib.pyplot as plt
 from collections import deque
 import random
 from env.tetris_env import TetrisEnv
-from flask import Flask, render_template
-app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template("tetris_live.html")  # avec Pygame intégré
-
-app.run(host='0.0.0.0', port=5000)
-
-# ==== DQN Agent ====
-
+# ==== DQN ==== #
 class DQN(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(DQN, self).__init__()
@@ -85,9 +75,8 @@ class DQNAgent:
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
-# ==== Training Loop ====
-
-def train_agent(episodes=500):
+# ==== Training Loop ==== #
+def main(episodes=500):
     env = TetrisEnv()
     state_size = len(env._get_state())
     action_size = 4  # gauche, droite, rotation, drop
@@ -96,7 +85,7 @@ def train_agent(episodes=500):
 
     for ep in range(episodes):
         state = env.reset()
-        total_reward = 100  # base score
+        total_reward = 100
 
         while True:
             action = agent.choose_action(state)
@@ -117,19 +106,16 @@ def train_agent(episodes=500):
         scores.append(total_reward)
         print(f"Episode {ep+1}/{episodes} - Score: {total_reward:.2f} - Epsilon: {agent.epsilon:.2f}")
 
-        # Sauvegarde tous les 50 épisodes
         if (ep + 1) % 50 == 0:
             torch.save(agent.model.state_dict(), f"models/dqn_tetris_ep{ep+1}.pth")
 
-    # Courbe de score
     plt.plot(scores)
     plt.title("Progression du Score de l'IA")
     plt.xlabel("Épisodes")
     plt.ylabel("Score")
     plt.grid()
-    plt.show()
+    plt.savefig("training_progress.png")  # utile pour Render
+    plt.close()
 
 if __name__ == "__main__":
-    train_agent()
-
-wandb.log({"episode": episode, "score": score, "epsilon": agent.epsilon})
+    main()
