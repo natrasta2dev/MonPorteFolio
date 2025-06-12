@@ -8,10 +8,6 @@ import random
 from tetris_dqn.env.tetris_env import TetrisEnv
 import os
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-
 # ==== DQN ==== #
 class DQN(nn.Module):
     def __init__(self, input_dim, output_dim):
