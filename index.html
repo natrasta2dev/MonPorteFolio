@@ -6,17 +6,26 @@
     <title>Nathan Cuvelier | Portfolio</title>
     <link rel="stylesheet" href="style.css" />
     <!-- Remplace l'ancien script JS -->
-    <iframe src="http://localhost:5000/" width="320" height="640" style="position:fixed; bottom:0; right:0; border:none;"></iframe>
+    <iframe
+            src="https://monportefolio-nwpk.onrender.com"
+            width="320"
+            height="640"
+            style="
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        border: none;
+        opacity: 0.5;
+        pointer-events: none;
+    ">
+    </iframe>
+
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <canvas id="tetris"></canvas>
-<div id="scoreboard">
-    <h3>Score</h3>
-    <div id="score">0</div>
-    <h4>Meilleur</h4>
-    <div id="highscore">0</div>
-</div>
 
 <body>
 <header>
